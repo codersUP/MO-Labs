@@ -73,3 +73,4 @@ def exercise_3(vector:[]):
     
     print(res.x)
 
+exercise_3([1,2])

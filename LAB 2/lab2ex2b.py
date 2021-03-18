@@ -20,6 +20,7 @@ m.solver_options = ['minlp_maximum_iterations 500', \
 # Initialize variables
 x0 = m.Var(value=5,lb=0,integer=True)
 x1 = m.Var(value=1,lb=0,integer=True)
+
 # Equations
 m.Equation(x0 + 2*x1<=1)
 m.Equation(x0**2+x1<=1)
