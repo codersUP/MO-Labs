@@ -1,7 +1,7 @@
 from gekko import GEKKO
-m = GEKKO() # Initialize gekko
+m = GEKKO(remote=False) # Initialize gekko
 m.options.SOLVER=1  # APOPT is an MINLP solver
-m.options.IMODE = 5
+# m.options.IMODE = 5
 # optional solver settings with APOPT
 m.solver_options = ['minlp_maximum_iterations 500', \
                     # minlp iterations with integer solution
@@ -18,8 +18,8 @@ m.solver_options = ['minlp_maximum_iterations 500', \
                     'minlp_gap_tol 0.01']
 
 # Initialize variables
-x0 = m.Var(value=5,lb=-100000,ub=100000,integer=True)
-x1 = m.Var(value=1,lb=-100000,ub=100000,integer=True)
+x0 = m.Var(value=5,lb=0,integer=True)
+x1 = m.Var(value=1,lb=0,integer=True)
 # Equations
 m.Equation(3*x0 + 2*x1<=17)
 m.Equation(x0**2+x1**2<=100)
