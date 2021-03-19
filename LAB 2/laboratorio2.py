@@ -1,6 +1,52 @@
 from pulp import *
 
 
+def exercise_1():
+    rutas = ['ruta_1', 'ruta_2', 'ruta_3']
+
+    CP = {'ruta_1': 12000,
+          'ruta_2': 21000,
+          'ruta_3': 15000}
+
+    CG = {'ruta_1': 14,
+          'ruta_2': 17,
+          'ruta_3': 16}
+
+    total = 35
+
+
+    prob = LpProblem("Problem_1_a", LpMinimize)
+
+    X = LpVariable.dicts("Cambio de parte de los ómnibus",rutas,0, None, LpInteger)
+
+    prob += -lpSum([int(CP[r]/CG[r]) * X[r] for r in rutas])
+    
+    prob += lpSum([X[r] for r in rutas]) <= total 
+    for r in rutas:
+        prob += X[r] <= CG[r]
+
+    prob.solve()
+    print("Status:", LpStatus[prob.status])
+    for v in prob.variables():
+        print(v.name, "=", v.varValue)
+    print("Se moveran en omnibus nuevos unicamente", -value(prob.objective), "pasajeros.")
+
+
+    prob = LpProblem("Problem_1_b", LpMinimize)
+
+    X = LpVariable.dicts("Cambio de todos los ómnibus",rutas,0, 1, LpInteger)
+
+    prob += -lpSum([CP[r] * X[r] for r in rutas])
+    
+    prob += lpSum([CG[r] * X[r] for r in rutas]) <= total 
+
+    prob.solve()
+    print("Status:", LpStatus[prob.status])
+    for v in prob.variables():
+        print(v.name, "=", v.varValue)
+    print("Se moveran en omnibus nuevos unicamente", -value(prob.objective), "pasajeros.")
+
+
 def exercise_2():
     encendido = 500
 
@@ -18,7 +64,7 @@ def exercise_2():
     cant_leche = 2000
     presupuesto = 1500
 
-    prob = LpProblem("Problem_1", LpMinimize)
+    prob = LpProblem("Problem_2", LpMinimize)
 
     X = LpVariable.dicts("Product",products,0, None, LpInteger)
     Y = LpVariable.dicts("FacturyOn", products, 0, 1, LpInteger)
@@ -90,6 +136,7 @@ def exercise_4():
 
 
 def main():
+    exercise_1()
     exercise_2()
     exercise_4()
 
