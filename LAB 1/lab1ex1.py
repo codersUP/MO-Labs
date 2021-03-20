@@ -19,10 +19,13 @@ def exercise_1():
     prob = LpProblem("Problem_1", LpMinimize)
     X = LpVariable.dicts("Product",products,0)
 
-    prob += -lpSum([(X[i] * CH[i] * CT[i] * P[i]) - (X[i] * P[i]) - (X[i] * CH[i] * H[i] * 5) for i in products])
+    prob += -lpSum([(P[i] * CT[i] * X[i] - X[i] * P[i] / CH[i] - X[i] * H[i] * 5) for i in products])
 
-    prob += lpSum([X[i] * CH[i] for i in products]) <= 1200
-    prob += lpSum([X[i] * CH[i] * H[i] for i in products]) <= 450
+    prob += lpSum([X[i] for i in products]) <= 1200
+    prob += lpSum([X[i] * H[i] for i in products]) <= 450
+
+    for p in products:
+        prob += X[p] >= 0
 
     prob.solve()
     print("Status:", LpStatus[prob.status])
@@ -54,6 +57,9 @@ def exercise_2():
     X = LpVariable.dicts("Product",(articulos, bodegas),0)
 
     prob += -lpSum([X[a][b] * G[a] for (a, b) in Dist])
+
+    for (a, b) in Dist:
+        prob += X[a][b] >= 0
 
     for a in articulos:
         prob += lpSum([X[a][b] for b in bodegas]) <= T[a]
@@ -129,11 +135,14 @@ def exercise_3():
 
     prob += lpSum([X[i][p] * PR[i] for (i, p) in Dist])
 
+    for (i, p) in Dist:
+        prob += X[i][p] >= 0
+
     for i in ['M1', 'M2']:
         prob += lpSum([X[i][p] for p in productos]) <= CT[i]
 
     for p in productos:
-        prob += lpSum([X[i][p] for i in ingredientes]) == CP[p]
+        prob += lpSum([X[i][p] for i in ingredientes]) >= CP[p]
 
     for p in productos:
         for k in ['aceite', 'secador', 'solvente']:
@@ -147,8 +156,8 @@ def exercise_3():
     print("Ganancias = ", value(prob.objective))
 
 def main():
-    exercise_1()
-    exercise_2()
+    # exercise_1()
+    # exercise_2()
     exercise_3()
     
 
