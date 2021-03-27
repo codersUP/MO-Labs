@@ -32,6 +32,7 @@ def exercise_1():
     for v in prob.variables():
         print(v.name, "=", v.varValue)
     print("Ganancias = ", -value(prob.objective))
+    
 
 
 def exercise_2():
