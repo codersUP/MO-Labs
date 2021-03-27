@@ -1,0 +1,244 @@
+\documentclass[titlepage, 11pt]{scrartcl}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{amsmath, amsthm, amsfonts}
+\usepackage{graphics}
+\usepackage{skull}
+\usepackage{mathabx}
+\usepackage{float}
+\usepackage{epsfig}
+\usepackage{amssymb}
+\usepackage{dsfont}
+\usepackage{latexsym}
+\usepackage{newlfont}
+\usepackage{epstopdf}
+\usepackage{amsthm}
+\usepackage{epsfig}
+\usepackage{caption}
+\usepackage{multirow}
+\usepackage{graphics}
+\usepackage{wrapfig}
+\usepackage[rflt]{floatflt}
+\usepackage{multicol}
+
+\hypersetup{colorlinks,%
+	citecolor=black,%
+	filecolor=cyan,%
+	linkcolor=blue!60,%
+	urlcolor=cyan}
+
+\title{
+    \normalfont\normalsize
+    {\huge Modelos de Optimización\\
+    		\textbf{Laboratorio 1}}
+    \vspace{12pt}
+}
+
+\author{Osmany P\'erez Rodr\'iguez\\
+		Enrique Mart\'inez Gonz\'alez\\
+		Carmen Irene Cabrera Rodr\'iguez\\
+		\textbf{Grupo C412}}
+
+\date{}
+
+\begin{document}
+    \maketitle 
+    
+	La programaci\'on de los ejercicios orientados se realiz\'o en todos los casos en el lenguaje de programaci\'on Python. La ejecuci\'on de los mismos fue llevada a cabo en una computadora HP con procesador AMD10 y 8GB RAM.
+    \section{}{
+		Los siguientes ejercicios (ej 1, 2, 3 de la CP1) fueron resueltos haciendo uso de PuLP, una biblioteca de Python para optimizaci\'on lineal.
+    	\begin{description}
+    		\item[1]
+    		
+    		 \textbf{Producto:}\\
+    		- Tomate $\rightarrow 0$\\
+    		- Lechuga $\rightarrow 1$\\
+    		- Acelga $\rightarrow 2$\\
+    		\\\
+    		\textbf{Parámetros:}\\        
+    		\\\
+    		$p_i  \rightarrow $ precio de la semilla del producto $i$\\
+    		$h_i \rightarrow $ hombres-día necesarios para producto $i$\\
+    		$ct_i \rightarrow$ cantidad de toneladas por hectárea del producto $i$\\
+    		$ch_i \rightarrow$ cantidad de hectáreas por tonelada de semilla de producto $i$\\
+    		\\\
+    		\textbf{Variables:}\\
+    		$x_i \rightarrow$ cantidad de hectáreas sembradas del producto $i$\\
+    		\\\
+    		\textbf{Modelo:}\\
+    		$$max  \Sigma_{i=0}^{2} p_i * ct_i*x_i - \frac{x_i}{ch_i}*p_i  - x_i*h_i*5$$\\
+    		
+    		$$s.a:$$
+    		$$ \Sigma_{i=0}^{2} h_i *x_i \leq 450$$,
+    		$$\Sigma_{i=0}^{2} x_i \leq 1200$$, 
+    		$$x_i \geq 0  \ \forall i \in \{0,1,2\} $$
+    	
+    		Puede encontrar el c\'odigo del problema a trav\'es del siguiente \href{lab1ex1.py}{enlace}
+    		
+    		Los resultados obtenidos fueron los siguientes:
+    			\begin{center}
+   					\begin{tabular}{| c | c |}
+   						\hline
+   						Producto & Cantidad (ha) \\ \hline
+   						Tomate & 90 \\
+   						Lechuga & 0 \\
+   						Acelga & 0 \\ \hline
+   					\end{tabular}	
+    			\end{center}
+
+    	
+    		\textbf{Ganancia: } 11430
+    		
+    		Cantidad de iteraciones = 1
+    		
+    		Tiempo = 0.002
+    		
+    		
+    		
+    		\item[2]   		
+    		\textbf{Bodega:}\\
+    		- Proa $\rightarrow 0$\\
+    		- Centro $\rightarrow 1$\\
+    		- Popa $\rightarrow 2$\\
+			\textbf{Artículo:}\\
+    		- A $\rightarrow a_0$\\
+    		- B $\rightarrow a_1$\\
+    		- C $\rightarrow a_2$\\
+    		\\\
+			\textbf{Parámetros:}\\        
+    		\\\
+    		$T_i  \rightarrow $ cantidad de toneladas del artículo $i$\\
+    		$C_i \rightarrow $ capacidad de la bodega $i$ en toneladas\\
+    		$G_i \rightarrow$ ganancia por tonelada del artículo $i$\\
+    		\\\
+    		\textbf{Variables:}\\
+    		$X_{ij} \rightarrow$ cantidad de toneladas del artículo $A_i$ en la bodega $j$\\
+    		\\\
+    		\textbf{Modelo:}\\
+    		$$min\sum_{j=1}^{2}\sum_{i=0}^{4}X_{i, j} * PR_{i}$$\\
+    		
+    		$$s.a:$$
+    		$$X_{i, j} \geq 0, \forall i, j \in 0, 1, 2$$
+    		$$\sum_{j=0}^{2}X_{i, j} \leq T_{i}, \forall i \in 0, 1, 2$$
+    		$$\sum_{i=0}^{2}X_{i, j} \leq C_{j}, \forall j \in 0, 1, 2$$
+    		$$\frac{\sum_{i=0}^{2}X_{i, 0}}{C_0} = \frac{\sum_{i=0}^{2}X_{i, 1}}{C_1} = \frac{\sum_{i=0}^{2}X_{i, 2}}{C_2}$$ 
+    		
+   			Puede encontrar el c\'odigo del problema a trav\'es del siguiente \href{lab1ex1.py}{enlace}
+   			
+   			Los resultados obtenidos fueron los siguientes:
+   			\begin{center}
+   				\begin{tabular}{| c | c | c | c |}
+   					\hline
+   					Producto & Centro & Popa &Proa\\ \hline
+   					A & 2500 & 0 & 0 \\
+   					B & 500 & 1500 & 2000 \\
+   					C & 0 & 0 & 0 \\ \hline
+   				\end{tabular}	
+   			\end{center}
+   			
+			\textbf{Ganancia: } 47000
+			
+			Cantidad de iteraciones = 4
+
+			Tiempo = 0.002
+    		
+    		
+    		\item[3] 
+    		
+    		\textbf{Productos}:\\
+    		- P1 $\rightarrow 0$\\
+    		- P2 $\rightarrow 1$\\
+    		\\\
+    		\textbf{Ingredientes}:\\
+    		- M1 $\rightarrow 0$\\
+    		- M2 $\rightarrow 1$\\
+    		- Aceite $\rightarrow 2$\\
+    		- Secador $\rightarrow 3$\\
+    		- Solvente $\rightarrow 4$\\
+    		\\\
+    		\textbf{Parámetros}:\\
+    		- $P_{i, j} \rightarrow$ proporción del ingrediente $i$ en el producto $j$. Resaltar que la receta de $P_1$ y $P_2$ no tienen como ingredientes a los componentes $M_1$ ni $M_2$. Por lo que $P_{0, 0}= P_{1, 0} = P_{0, 1} = P_{1, 1} = 0$.\\
+    		- $CT_i \rightarrow$ cantidad total que se dispone del componente $i$.\\
+    		- $PR_i \rightarrow$ precios del componente $i$.\\
+    		- $Y_{i, j} \rightarrow$ proporción del ingrediente $j$ en el componente $i$.\\
+    		- $CP_i \rightarrow$ cantidad que se necesita producir del producto $i$.\\
+    		\\\
+    		\textbf{Variables}:\\
+    		$X_{i,j} \rightarrow$ cantidad de $hl$ del ingrediente $i$ en el producto $j$\\
+    		\\\
+    		\textbf{Modelo}:\\
+    		$$min\sum_{j=0}^{1}\sum_{i=0}^{4}X_{i, j} * PR_{i}$$\\
+    		
+    		$$s.a:$$
+    		$$X_{i, j} \geq 0, \forall i \in 0, 1, 2, 3, 4, \forall j \in 0, 1$$
+    		$$\sum_{j=0}^{1}X_{i, j} \leq CT_i, i \in 0, 1$$
+    		$$\sum_{i=0}^{4}X_{i, j} \geq CP_j, j \in 0, 1$$
+    		$$\sum_{i=0}^{4}(X_{i, j} * Y_{i, k}) = P_{k, j} * \sum_{i=0}^{4}X_{i, j}, k \in 2, 3, 4, j \in 0, 1$$\\
+    		
+    		
+    		Puede hallar el c\'odigo de este problema en el siguiente \href{lab1ex1.py}{enlace}. Los resultados obtenidos fueron los siguientes:
+    		
+    		\begin{center}
+    			\begin{tabular}{| c | c | c |}
+    				\hline
+    				Cantidad (hl) & P1 & P2\\\hline
+    				M1 & 0 & 0 \\
+    				M2 & 0 & 150\\
+    				Aceite & 440 & 171\\
+    				Solvente & 55 & 36\\    				
+    				Secador & 55 & 63 \\ \hline
+    			\end{tabular}	
+    		\end{center}
+    		
+    		\textbf{Costo m\'inimo: } 3067.8
+    		
+    		Cantidad de iteraciones = 8
+    		
+    		Tiempo = 0.002
+    	\end{description}
+
+	}
+
+	\section{}{
+		Para la resoluci\'on de este ejercicio se emple\'o la biblioteca de python \textbf{Scipy}, con su m\'odulo \textit{optimize}. En este m\'odulo se puede encontrar la funci\'on \textit{minimize}, que fue la utilizada en este caso, pues permite minimizar una funci\'on de varias variables. Esta funci\'on permite pasar como par\'ametro el solucionador elegido para solucionar el modelo; en este caso, como el modelo no presenta resticciones, se utiliz\'o el m\'etodo Nelder-Mead que usa en su funcionamiento el algoritmo Simplex.
+		
+		Es sencillo determinar que el valor m\'inimo que puede alcanzar esta funci\'on es 0; lo cual ocurre cuando $x_i = 1, \forall i = 1 \ldots n$. Puede encontrar el c\'odigo de este ejercicio a trav\'es de este \href{lab1_ex2.py}{enlace}. Para cada $n$ se obtuvieron los siguientes resultados:
+		\begin{align*}
+			n = 2 \Rightarrow& Valor \ de \ la \ funcion: 0.000000\\
+			&Iteraciones: 79\\
+			&Cantidad \ de \ evaluaciones \ de \ la  \ funcion: 150\\
+			&Valor \ de \ cada \ variable: [1. 1.]\\
+			n = 3 \Rightarrow& Valor \ de \ la \ funcion: 0.000000\\
+			&Iteraciones: 150\\
+			&Cantidad \ de \ evaluaciones \ de \ la  \ funcion: 270\\
+			&Valor \ de \ cada \ variable: [1. 1. 1.]\\
+			n = 4 \Rightarrow& Valor \ de \ la \ funcion: 0.000000\\
+			&Iteraciones: 235\\
+			&Cantidad \ de \ evaluaciones \ de \ la  \ funcion: 411\\
+			&Valor \ de \ cada \ variable: [1. 1. 1. 1.]\\
+			n = 5 \Rightarrow& Valor \ de \ la \ funcion: 0.000000\\
+			&Iteraciones: 339\\
+			&Cantidad \ de \ evaluaciones \ de \ la  \ funcion: 571\\
+			&Valor \ de \ cada \ variable: [1. 1. 1. 1. 1.]\\
+		\end{align*}
+	
+	}
+
+	\section{}{
+		Para la soluci\'on de este ejercicio se utiliz\'o la biblioteca \textbf{Gekko}, un paquete de Python para \textit{machine learning} y optimizaci\'on. Adem\'as viene aparejada de solucionadores a gran escala para programaci\'on lineal, no lineal, cuadr\'atica, etc.
+		
+		El c\'odigo empleado para su soluci\'on se puede encontrar a trav\'es de este \href{lab1_ex3gekko.py}{enlace}. Los resultados obtenidos fueron los siguientes:
+		\begin{align*}
+			x_0 &= 0.50220271892\\
+			x_1 &= 0.24889864054\\
+			Objetivo &: 0.24889703506 
+		\end{align*}
+		
+		Cantidad de iteraciones realizadas: 11
+		
+		Tiempo de soluci\'on: 2.730000000155997E-002.
+	}
+        
+
+\end{document}

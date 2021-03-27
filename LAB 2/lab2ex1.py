@@ -137,8 +137,8 @@ def exercise_4():
 
 def main():
     exercise_1()
-    exercise_2()
-    exercise_4()
+    # exercise_2()
+    # exercise_4()
 
 
 if __name__ == '__main__':
