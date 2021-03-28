@@ -12,7 +12,6 @@ def kkt_condition(vector_size,grad_f,  grad_h, grad_g, x, ineq_constraints):
         row = [grad(x)[i] for i in range(len(x))]
         matrix.append(row)
 
-    LICQ = matrix_rank(matrix) == len(grad_h) + len(active_index_gradients)
         
 
     lambdas = sp.symbols("l0:%d" % len(grad_h))
@@ -26,12 +25,12 @@ def kkt_condition(vector_size,grad_f,  grad_h, grad_g, x, ineq_constraints):
     mius_sol = solutions[len(lambdas) :]
 
     if len(solutions) != 0:
-        if LICQ:
-            return all(i >= 0 for i in mius_sol) 
+        if all(i >= 0 for i in mius_sol):
+            return 1
         else:
-            return True
+            return 0
     
-    return False  
+    return -1  
 
 def active_indexes(x,ineq_g,grad_g):
     active_gi =[]
