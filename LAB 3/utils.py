@@ -22,15 +22,13 @@ def kkt_condition(vector_size,grad_f,  grad_h, grad_g, x, ineq_constraints):
 
 
     solutions = sp.solve(linear_system, [*lambdas, *mius])
-    mius_sol = solutions[len(lambdas) :]
 
-    if len(solutions) != 0:
-        if all(i >= 0 for i in mius_sol):
-            return 1
-        else:
-            return 0
+    try:
+        mius_sol = solutions[len(lambdas) :]
+    except TypeError:
+        return solutions
     
-    return -1  
+    return len(solutions) != 0 and all(i >= 0 for i in mius_sol)
 
 def active_indexes(x,ineq_g,grad_g):
     active_gi =[]
