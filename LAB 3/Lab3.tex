@@ -1,0 +1,148 @@
+\documentclass[titlepage, 11pt]{scrartcl}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{amsmath, amsthm, amsfonts}
+\usepackage{graphics}
+\usepackage{skull}
+\usepackage{mathabx}
+\usepackage{float}
+\usepackage{epsfig}
+\usepackage{amssymb}
+\usepackage{dsfont}
+\usepackage{latexsym}
+\usepackage{newlfont}
+\usepackage{epstopdf}
+\usepackage{amsthm}
+\usepackage{epsfig}
+\usepackage{caption}
+\usepackage{multirow}
+\usepackage{graphics}
+\usepackage{wrapfig}
+\usepackage[rflt]{floatflt}
+\usepackage{multicol}
+\usepackage{minted}
+
+\hypersetup{colorlinks,%
+	citecolor=black,%
+	filecolor=cyan,%
+	linkcolor=blue!60,%
+	urlcolor=cyan}
+
+\title{
+    \normalfont\normalsize
+    {\huge Modelos de Optimización\\
+    		\textbf{Laboratorio 3}}
+    \vspace{12pt}
+}
+
+\author{Osmany P\'erez Rodr\'iguez\\
+		Enrique Mart\'inez Gonz\'alez\\
+		Carmen Irene Cabrera Rodr\'iguez\\
+		\textbf{Grupo C412}}
+
+\date{}
+
+\begin{document}
+    \maketitle 
+    
+	\textbf{Condiciones necesarias de Karush-Kuhn-Tucker (KKT) para problemas con restricciones de igualdad y desigualdad.}
+	
+	Sea $X$ un conjunto abierto no vacío en $R^n$ y sean $f$, $g_j$ y $h_i$ con $i = 1 \ldots m$ y $j = 1\ldots k$, funciones de $R^n$ en $R$. Considere el problema $P: min{f(x) | x \in X, g_j(x) \leq 0, h_i(x) = 0}$. Sea $x^*$ una solución factible del problema $P$. Suponga además que en el punto $x^*$ las funciones $f$, $h_i , \ i = 1 \ldots m$ y $g_j, \ j \in I(x^*)$ son continuamente diferenciables y la función $g_j, \ j\notin I(x^*)$ es continua.
+	
+	Si $x^*$ es un punto regular y un mínimo local del problema $P$, entonces existen escalares únicos $\lambda_i, \ i = 1 \ldots m$ y $\mu_j, \ j \in I(x^*)$, tal que:
+	\begin{equation*}
+		\nabla f(x^*) + \sum_{i = 1}^{m}\lambda_i \nabla h_i(x^*) + \sum_{j \in I(x^*)}\mu_j \nabla g_j(x^*) = 0
+	\end{equation*}
+	\begin{equation*}
+		\mu_j \geq 0, \ j \in I(x^*)
+	\end{equation*}
+	
+	Dado un problema $P$ y un punto $x^*$ que es solución factible de $P$, se puede determinar si esta punto cumple las condiciones de KKT. Para ello se implement\'o el siguiente algoritmo:
+	
+	\begin{figure}[H]
+		\begin{minted}[tabsize=4]{python}
+def kkt_condition(v_size, g_f, g_h, g_g, x, ineq_constraints):
+
+	active_index_gradients = active_indexes(x, ineq_constraints, g_g)
+	
+	matrix = []
+	for grad in [*g_h, *active_index_gradients]:
+		row = [grad(x)[i] for i in range(len(x))]
+		matrix.append(row)
+		
+	lambdas = sp.symbols("l0:%d" % len(g_h))
+	mius = sp.symbols("m0:%d" % len(active_index_gradients))
+		
+	linear_system = equation_system(x, v_size, lambdas, mius, g_f, g_h,
+									 active_index_gradients)
+	
+	solutions = sp.solve(linear_system, [*lambdas, *mius])
+	mius_sol = solutions[len(lambdas) :]
+	
+	if len(solutions) != 0:
+		if all(i >= 0 for i in mius_sol):
+			return 1
+		else:
+			return 0
+	
+	return -1  
+		\end{minted}
+	\end{figure}
+
+El método recibe la dimensión en la que se está trabajando, los gradientes de las funciones $f, g, h$, el punto que se desea evaluar y las restricciones de las desigualdades, en este mismo orden.
+
+Se determinan las funciones $g_j$ tal que que $j\in I(x^*)$ y se conforma la matriz que está compuesta por los gradientes de las funciones $h_i$ y los $g_j$ activados. Se declaran las variables $\lambda_i$ y $\mu_j$ para conformar el sistema lineal a resolver.
+
+Para solucionar dicho sistema se hizo uso de la biblioteca de Python SymPy, que tiene como propósito reunir todas las caracterísitcas de un sistema de álgebra computacional; es fácilmente extensible y permite la generación de código sencillo y legible.
+
+Una vez procesado el sistema, de acuerdo al resultado arrojado por el algoritmo se determina si el sistema fue:
+\begin{itemize}
+	\item  compatible determinado, o sea, que tiene una única solución, con lo cual el método retorna 1
+	\item compatible indeterminado, que tiene infinitas soluciones, lo cual hace que el método retorne 0
+	\item incompatible, sería que no tiene solución, por tanto retorna 0
+\end{itemize}
+
+Si se desea acceder al código completo, se puede hacer a través de este \href{utils.py}{enlace}
+	
+En todos los casos se obtuvo que el sistema era incompatible y por tanto, no se cumplen las condiciones de KKT para los puntos dados. Luego o bien los puntos dados no eran m\'inimos locales del problema o no eran puntos regulares (no cumplen con la LICQ).
+
+Veamos, analíticamente, como se llega a estos resultados. Tomemos como ejemplo, el ejercicio 1a con el punto $x^* = (1.5, 2.5) = (\frac{3}{2}, \frac{5}{2})$
+\begin{equation*}
+		min \ 3x_1^2 - x_0^2
+\end{equation*}
+
+\begin{align*}
+	2x_0 - x_1^2 &\leq 0\\
+	x_0 &\geq 0\\
+	x_1 &\geq 0
+\end{align*}
+
+Luego:
+\begin{align*}
+	f(x) = 3x_1^2 - x_0^2 &\Rightarrow \nabla f(x) = (-2x_0, 6x_1)\\
+	g_1(x) = 2x_0 - x_1^2 \leq 0 &\Rightarrow \nabla g_1(x) = (2, -2x_1)\\
+	g_2(x) = -x_0 \leq 0 &\Rightarrow \nabla g_2(x) = (-1, 0)\\
+	g_3(x) =  -x_1 \leq 0 &\Rightarrow \nabla g_3(x) = (0, -1)
+\end{align*}
+
+Para verificar cuales son los \'indices activos de las funciones $g_j$ se eval\'ua la funci\'on $g_j(x^*) = 0$ y si la igualdad se cumple entonces $j \in I(x^*)$
+\begin{align*}
+	g_1(x^*) &= 2x_0 - x_1^2 = 2 * \frac{3}{2} - (\frac{5}{2})^2 = 3 - \frac{25}{4} \neq 0\\
+	g_2(x^*) &= -x_0 = - \frac{3}{2} \neq 0\\
+	g_3(x^*) &= -x_1 = - \frac{5}{2} \neq 0
+\end{align*}
+
+Por tanto $I(x^*)  = \emptyset$  y para verificar el cumplimiento de la KKt en este punto, basta comprobar la igualdad $\nabla f(x^*) = 0$. 
+\begin{equation*}
+	\nabla f(x^*) = (-2 * \frac{3}{2}, 6 * \frac{5}{2}) = (-3, 15) \neq 0
+\end{equation*}
+De donde se puede afirmar que no se cumple la condición de KKT para este punto.
+
+Aplicando de forma an\'aloga este procedimiento en el resto de los ejercicios, se pueden comprobar los resultados obtenidos en el algoritmo presentado.
+
+
+
+
+
+\end{document}
