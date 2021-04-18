@@ -98,7 +98,7 @@ def omega(x):
 
 def plot():
     x = np.arange(-500, 500, 0.1);
-    y = [SchwefelsFunction([i]) for i in x]
+    y = [F([i]) for i in x]
 
     plt.plot(x, y)
     plt.show()
@@ -107,7 +107,7 @@ def plot():
 
 #testing-------------------
 if __name__ == '__main__':
-    # plot()
+    plot()
 
     print(Penalization_method("BFGS", Q, omega, x0=np.array([380,380]), c0=1, alpha=1.5, epsilon=0.001, k_max=500))
     print(Barrier_method("BFGS", R, x0=np.array([380,380]), miu_0=1, alpha=0.5, epsilon=0.001, k_max=500))

@@ -89,7 +89,7 @@ def plot():
     plt.show()
 
 if __name__ == '__main__':
-    # plot()
+    plot()
 
     print(Penalization_method("BFGS", Q, omega, x0=np.array([-1,-1]), c0=1, alpha=1.5, epsilon=0.001, k_max=500))
     print(Barrier_method("BFGS", R, x0=np.array([1,1]), miu_0=1, alpha=0.9, epsilon=0.001, k_max=500))
