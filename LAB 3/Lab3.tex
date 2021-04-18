@@ -63,7 +63,7 @@
 	\vspace{1cm}
 	\section{Algoritmo implementado}
 	
-	Dado un problema $P$ y un punto $x^*$ que es solución factible de $P$, se puede determinar si esta punto cumple las condiciones de KKT. Para ello se implement\'o el siguiente algoritmo (\ref{code}):
+	Dado un problema $P$ y un punto $x^*$ que es solución factible de $P$, se puede determinar si este punto cumple las condiciones de KKT. Para ello se implement\'o el siguiente algoritmo (\ref{fig:code}):
 	
 	El método recibe como parámetros:
 	\begin{itemize}
@@ -112,12 +112,10 @@ def kkt_condition(v_size, g_f, g_h, g_g, x, ineq_constraints):
 	
 	return len(solutions) != 0 and all(i >= 0 for i in mius_sol) 
 		\end{minted}
-		\label{code}
+		\caption{Se puede acceder al código completo a través de este \href{utils.py}{enlace}}
+		\label{fig:code}
 	\end{figure}
 
-
-
-Se puede acceder al código completo a través de este \href{utils.py}{enlace}
 	
 	
 	\vspace{1cm}
