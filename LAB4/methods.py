@@ -20,7 +20,7 @@ def NewtonMethod(f, der_f, second_der_f, xk, k):
     return NewtonMethod(f, der_f, second_der_f, xk1, k1)
 
 
-def BFGSMehtod(f, der_f, xk, Sk, tk, k):
+def BFGSMethod(f, der_f, xk, Sk, tk, k):
     gk = der_f(xk)
 
     if np.isclose(VectorNorm(gk), 0):
@@ -48,7 +48,7 @@ def BFGSMehtod(f, der_f, xk, Sk, tk, k):
 
     k1 = k + 1
 
-    return BFGSMehtod(f, der_f, xk1, Sk1, tk, k1)
+    return BFGSMethod(f, der_f, xk1, Sk1, tk, k1)
 
 
 def CalculateStep(xk, f, der_f, m1, m2, t, tg, td, a, b, c, h, derH):
@@ -165,3 +165,9 @@ def Barrier_method(Irrestricted_method, R_method, x0,miu_0, alpha,epsilon, k_max
         norm = np.linalg.norm([x_k[i] - x_k1[i] for i in range(len(x_k1))])
 
     return x_k1
+
+
+def SQP_method(f, x0, bounds, k_max):
+    res = optimize.minimize(f, x0, method='SLSQP', bounds=bounds, options={'maxiter': k_max})
+    
+    return res.x

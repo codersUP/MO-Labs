@@ -77,11 +77,12 @@ def omega(x):
             return False
     return True
 
-
+def Bounds(n):
+    return [(-2 * math.pi, 2 * math.pi) for _ in range(n)]
 
 
 def plot():
-    x = np.arange(-2 * math.pi, 2 * math.pi, 0.1);
+    x = np.arange(-2 * math.pi, 2 * math.pi, 0.1)
     y = [F([i]) for i in x]
 
     plt.plot(x, y)
@@ -93,5 +94,7 @@ def plot():
 if __name__ == '__main__':
     plot()
 
-    print(Penalization_method("BFGS", Q, omega, x0=np.array([4, 4, 4, 4]), c0=1, alpha=1.5, epsilon=0.001, k_max=500))
-    print(Barrier_method("BFGS", R, x0=np.array([4, 4, 4, 4]), miu_0=1, alpha=0.5, epsilon=0.0001, k_max=500))
+    x0 = np.array([4, 4, 4, 4])
+    print(Penalization_method("BFGS", Q, omega, x0, c0=1, alpha=1.5, epsilon=0.001, k_max=500))
+    print(Barrier_method("BFGS", R, x0, miu_0=1, alpha=0.5, epsilon=0.0001, k_max=500))
+    print(SQP_method(F, x0, Bounds(4), k_max=500))
