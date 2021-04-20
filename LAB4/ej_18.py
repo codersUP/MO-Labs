@@ -3,6 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import math
 from methods import *
+from pprint import pprint
 
 def F(x):
     return (4 - 2.1*x[0]**2 + 1/3*x[0]**4)*x[0]**2 + x[0]*x[1] + 4 * (x[1]**2 - 1) * x[1]**2
@@ -90,6 +91,9 @@ def plot():
 
 if __name__ == '__main__':
     plot()
-
-    print(Penalization_method("BFGS", Q, omega, x0=np.array([-1,-1]), c0=1, alpha=1.5, epsilon=0.001, k_max=500))
-    print(Barrier_method("BFGS", R, x0=np.array([1,1]), miu_0=1, alpha=0.9, epsilon=0.001, k_max=500))
+    
+    print("Penalization Method")
+    pprint(Penalization_method("BFGS", Q, omega, x0=np.array([-1,-1]), c0=1, alpha=1.5, epsilon=0.001, k_max=500))
+    print()
+    print("Barrier Method")
+    pprint(Barrier_method("BFGS", R, x0=np.array([1,1]), miu_0=1, alpha=0.9, epsilon=0.001, k_max=500))

@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from scipy import optimize
 from methods import *
-
+from pprint import pprint
 
 
 
@@ -14,11 +14,12 @@ def F(x):
     
     piatoria = 1
     exp_power = 0
-    for el in x:
-        piatoria *= math.cos(el)
-        exp_power -= (el-math.pi)**2
     
-    return -1 * (-1)**n * piatoria * math.exp(exp_power)   
+    for el in x:
+        piatoria*= (math.cos(el))
+        exp_power-= (el-math.pi)**2
+    
+    return -1  *  ((-1)**n) * (piatoria) * math.exp(exp_power)   
 
 #--------For x_i <= 500 restrictions-------------
 def g_i_1(x_i : float):
@@ -93,5 +94,8 @@ def plot():
 if __name__ == '__main__':
     plot()
 
-    print(Penalization_method("BFGS", Q, omega, x0=np.array([4, 4, 4, 4]), c0=1, alpha=1.5, epsilon=0.001, k_max=500))
-    print(Barrier_method("BFGS", R, x0=np.array([4, 4, 4, 4]), miu_0=1, alpha=0.5, epsilon=0.0001, k_max=500))
+    print("Penalization Method")
+    pprint(Penalization_method("BFGS", Q, omega, x0=np.array([3,3]), c0=1, alpha=1.5, epsilon=0.001, k_max=500))
+    print()
+    print("Barrier Method")
+    pprint(Barrier_method("BFGS", R, x0=np.array([3,3]), miu_0=1, alpha=0.5, epsilon=0.000001, k_max=500))
