@@ -22,7 +22,7 @@ x0 = m.Var(value=5,lb=0,integer=True)
 x1 = m.Var(value=1,lb=0,integer=True)
 # Equations
 m.Equation(3*x0 + 2*x1<=50)
-m.Equation(2*x0+x1<=40)
+m.Equation(2*x0+x1<=30)
 m.Obj(3*x1-x0**2) # Objective
 m.solve(disp=True) # Solve
 print('Results')
