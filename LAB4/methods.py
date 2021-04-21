@@ -2,6 +2,7 @@ import numpy as np
 import math
 import copy
 from scipy import optimize
+import time
 
 def NewtonMethod(f, der_f, second_der_f, xk, k):
     der_f_x = der_f(xk)
@@ -114,12 +115,17 @@ def VectorNorm(x):
 
 
 def Penalization_method(Irrestricted_method, Q_method, omega,x0,c0, alpha,epsilon, k_max):
+    start = time.time()
+    total_irrestricted_iterations =0      
+    total_irrestricted_time =0
+    
     c = c0
     k=0    
     
     x_k = None   
     x_k1 = x0
 
+    it = 0
     norm = epsilon +1 
     while norm > epsilon and k < k_max:
 
@@ -127,27 +133,48 @@ def Penalization_method(Irrestricted_method, Q_method, omega,x0,c0, alpha,epsilo
         
         Q_x_c = Q_method(c)
 
-        x_k1 = optimize.minimize(Q_x_c, x_k1,method=Irrestricted_method).x
+        minimize_time_start = time.time()
+        result = optimize.minimize(Q_x_c, x_k1,method=Irrestricted_method)
+        minimize_time_end = time.time()
+        
+        x_k1 = result.x
+        total_irrestricted_iterations+=result.nit
+        total_irrestricted_time+= minimize_time_end-minimize_time_start
 
         x_k =aux1        
 
         norm = np.linalg.norm([x_k[i] - x_k1[i] for i in range(len(x_k1))])
         
+        it+=1
         if(omega(x_k1)):
             continue
         else:
             c = alpha *c            
             k+=1
     
-    return x_k1
+    total_time = time.time() - start
+    answer = {"0.  x0" : x0,
+              "1.Result" : x_k1, 
+              "2.Time" : total_time, 
+              "3.Iteraciones/ Cantidad de llamados a metodo irrestricto" : it,
+              "4.Cantidad total de iteraciones de metodo irrestricto" : total_irrestricted_iterations,
+              "5.Promedio de iteraciones de metodo irrestricto" : total_irrestricted_iterations/it,
+              "6.Promedio de tiempo de metodo irrestricto" : total_irrestricted_time/it 
+              }
+    return answer
 
 def Barrier_method(Irrestricted_method, R_method, x0,miu_0, alpha,epsilon, k_max):
+    start = time.time()
+    
+    total_irrestricted_iterations =0      
+    total_irrestricted_time =0
+    
     miu = miu_0
     k=0    
     
     x_k = None    
-    
     x_k1 = x0
+
 
     norm = epsilon +1 
     while norm > epsilon and k < k_max:
@@ -155,17 +182,32 @@ def Barrier_method(Irrestricted_method, R_method, x0,miu_0, alpha,epsilon, k_max
         aux1 =copy.deepcopy(x_k1)
         
         R_x_miu = R_method(miu)
-        x_k1=  optimize.minimize(R_x_miu, x_k1, method=Irrestricted_method).x
 
+        minimize_time_start = time.time()
+        result=  optimize.minimize(R_x_miu, x_k1, method=Irrestricted_method)
+        minimize_time_end = time.time()
+
+        x_k1 = result.x
+        total_irrestricted_iterations+=result.nit
+        total_irrestricted_time+= minimize_time_end-minimize_time_start
+        
         x_k =aux1 
     
         miu = alpha *miu        
         k+=1
 
         norm = np.linalg.norm([x_k[i] - x_k1[i] for i in range(len(x_k1))])
-
-    return x_k1
-
+    
+    total_time = time.time() - start
+    answer = {"0.   x0" :x0,
+              "1.Result" : x_k1, 
+              "2.Time" : total_time, 
+              "3.Iteraciones/ Cantidad de llamados a metodo irrestricto" : k,
+              "4.Cantidad total de iteraciones de metodo irrestricto" : total_irrestricted_iterations,
+              "5.Promedio de iteraciones de metodo irrestricto" : total_irrestricted_iterations/k,
+              "6.Promedio de tiempo de metodo irrestricto" : total_irrestricted_time/k 
+              }
+    return answer
 
 def SQP_method(f, x0, bounds, k_max):
     res = optimize.minimize(f, x0, method='SLSQP', bounds=bounds, options={'maxiter': k_max})
