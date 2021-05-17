@@ -1,0 +1,450 @@
+\documentclass[titlepage, 11pt]{scrartcl}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{amsmath, amsthm, amsfonts}
+\usepackage{graphics}
+\usepackage{skull}
+\usepackage{mathabx}
+\usepackage{float}
+\usepackage{epsfig}
+\usepackage{amssymb}
+\usepackage{dsfont}
+\usepackage{latexsym}
+\usepackage{newlfont}
+\usepackage{epstopdf}
+\usepackage{amsthm}
+\usepackage{epsfig}
+\usepackage{caption}
+\usepackage{multirow}
+\usepackage{graphics}
+\usepackage{wrapfig}
+\usepackage[rflt]{floatflt}
+\usepackage{multicol}
+
+\hypersetup{colorlinks,%
+	citecolor=black,%
+	filecolor=cyan,%
+	linkcolor=blue!60,%
+	urlcolor=cyan}
+
+\title{
+    \normalfont\normalsize
+    {\huge Modelos de Optimización\\
+    		\textbf{Laboratorio 4}}
+    \vspace{12pt}
+}
+
+\author{Osmany P\'erez Rodr\'iguez\\
+		Enrique Mart\'inez Gonz\'alez\\
+		Carmen Irene Cabrera Rodr\'iguez\\
+		\textbf{Grupo C412 Equipo 9}}
+	
+
+\date{}
+
+\begin{document}
+    \maketitle 
+    
+	\section{Métodos numéricos para problemas de optimización no lineales}    
+		
+	Solucionar problemas de optimización que involucran funciones no lineales (ya sea la función objetivo, o las restricciones a las que está sujeto el problema) es un proceso complicado dado que, en la mayoría de los casos, requiere la solución de sistemas complejos de ecuaciones no lineales. De hecho, en la práctica, hallar el mínimo o máximo global de una
+función no-lineal cualquiera es un problema abierto en matemáticas. Los métodos
+existentes sólo obtienen mínimo locales.
+	
+	Entre los métodos numéricos que existen con este propósito se pueden mencionar:
+	\begin{itemize}
+		\item Método de máximo descenso
+		\item Método de Newton
+		\item Métodos de Quasi-Newton(BFGS, DFP, Gradiente Conjugado)
+		\item Método de región de confianza
+		\item Método de penalidad
+		\item Método de barrera
+		\item Método de secuenciación cuadrática
+	\end{itemize}
+
+	En particular, los métodos que se tomaron en consideración para la solución de los problemas orientados fueron los últimos tres, puesto que estos son métodos para problemas con restricciones, como es el caso; y los otros métodos son para problemas irrestrictos. Se verá a continuación un breve análisis de estos tres algoritmos.
+	
+	Suponga que se tiene el problema de programación no lineal:
+	\begin{align*}
+		min  &f(x)\\
+		s.a: &g_j(x) \leq 0, j = 1, \ldots , m\\
+		&h_i(x) = 0, i = 1, \ldots, n
+	\end{align*}
+	Con $f, g, h \in C^1(\Omega)$; considerando a $\Omega$ el conjunto de soluciones factibles; es decir, $\Omega = \{x \in \mathbb{R}: h_i(x) = 0 , g_j(x) \leq 0\}$
+	
+	\subsection{Método de Penalidad}
+	La idea de este método es minimizar $f$ sobre $\mathbb{R}^n$, aplicándole una penalización a los puntos que no están en $\Omega$. 
+	
+	Se define la función de penalización cuadrática como:
+	\begin{equation*}
+		Q(x, c) = f(x) + c \sum_{i = 1}^{n}h_i^2(x) + c \sum_{j = 1}^{m}g_j^+(x)^2
+	\end{equation*}
+	Donde $c$ es el \textit{parámetro de penalización} y $g_j^+ = max\{0, g_j(x)\}$. Se considera la secuencia $\{c_k\}$ tal que $c_k \rightarrow \infty$ cuando $k \rightarrow \infty$; a medida que aumente $c$, la violación de las restricciones será castigada con mayor severidad. Luego basta hallar el minimizador $x_k$ de $Q(x, c_k)$ para cada $k$ utilizando algún método de optimización irrestricto. Cualquier punto límite de la sucesión de puntos $\{x_k\}_{k \in \mathbb{N}}$ obtenidos con el método de penalidad es solución del problema $min f(x), x\in \Omega$.
+	
+	Se debe tener en cuenta a la hora de aplicar este método, que si se aumenta el valor de $c_k$ demasiado rápido, puede causar inestabilidad numérica y divergencia de los métodos de optimización; por ello, se debe comenzar con un $c$ pequeño y aumentarlo de forma gradual.
+	
+	Este método resulta de gran utilidad, puesto que es aplicable con generalidad a problemas de optimización con restricciones, ya sean de igualdad o desigualdad. Además, el punto inicial se puede seleccionar de forma arbitraria, no necesita pertenecer al conjunto de soluciones factibles. No obstante, dado que el método itera por la región no factible del problema, tanto el costo como las funciones de restricción pueden estar indefinidos. Además, si el proceso de iteración termina de forma prematura (por haber alcanzado el máximo número de iteraciones) el punto obtenido finalmente puede no ser factible y por tanto, no sería solución del problema.
+	
+	\subsubsection{Implementación}
+	Dadas las funciones $f, h_i, g_j$, el punto inicial $x_0 \in \mathbb{R}^n$ y $c_0 \in \mathbb{R}, \alpha \in \mathbb{R}_{> 1}, \varepsilon, k_{max}$ se presenta el siguiente pseudocódigo para el algoritmo:
+	\begin{enumerate}
+		\item Definir $Q(x, c_k)$
+		\item $x_{k + 1} = min Q(x, c_k)$ utilizando método de optimización irrestricta que asume como punto inicial $x_k$
+		\item Si $x_{k + 1} \in \Omega \Rightarrow$ PARAR
+		\item Si no: 
+		\begin{align*}
+			c_{k + 1} &= \alpha c_k\\
+			k &= k + 1
+		\end{align*}
+		\item Si $||x_k - x_{k+ 1}|| > \varepsilon$ y $k \leq k_{max}$ repetir el proceso desde el punto 1. De lo contrario PARAR.
+	\end{enumerate}
+
+	Se puede acceder al código que contiene la implementación de este método a través del siguiente \href{methods.py}{enlace}.
+	
+	\subsection{Método de Barrera}
+	A diferencia del algoritmo anterior, la idea del método de barrera es aproximarse a los puntos de la frontera de $\Omega$ desde su interior. Si se consigue una función $B$ tal que :
+	\begin{itemize}
+		\item $B$ es continua
+		\item $B(x) \geq 0$
+		\item $B(x) \rightarrow \infty$ cuando $x$ se acerca a la frontera de $\Omega$
+	\end{itemize}
+	Entonces se puede resolver el problema $min f(x) + \mu B(x)$ con métodos de optimización irrestricta. Entre las funciones de barrera más comunes está $B(x) = \sum_{i}-\frac{1}{g_i(x)}$, que fue la utilizada en la implementación del método. De este modo, el problema se transforma en minimizar la función:
+	\begin{equation*}
+		R(x, \mu) = f(x) + \mu B(x)
+	\end{equation*}
+	Análogo al método de penalidad, cualquier punto límite de la sucesión de puntos $\{x_k\}_{k \in \mathbb{N}}$ generada por este método es solución del problema.
+	
+	Vea que, dado que el algoritmo se mueve por los puntos interiores de $\Omega$, este método es aplicable a problemas con restricciones dadas por desigualdades; es necesario que $int \Omega \neq \emptyset$. En particular, este método es aplicable a los ejercicios que se resolverán a continuación, puesto que las restricciones de los mismos están dadas por desigualdades.
+	
+	Otra ventaja que provee la utilización de este método, es que típicamente se soluciona usando métodos de Newton para problemas irrestrictos, que convergen rápidamente si se inicializa cerca de la solución.
+	
+		\subsubsection{Implementación}
+		La implementación de este método es análoga a la del método de penalidad.
+		
+	Dadas las funciones $f, g_i$, el punto inicial $x_0 \in \mathbb{R}^n$ y $\mu_0 \in \mathbb{R}, \alpha \in \mathbb{R}_{< 1}, \varepsilon, k_{max}$ se presenta el siguiente pseudocódigo para el algoritmo:
+	\begin{enumerate}
+		\item Definir $R(x, \mu_k)$
+		\item $x_{k + 1} = min R(x, \mu_k)$ utilizando método de optimización irrestricta que asume como punto inicial $x_k$
+		\item \begin{align*}
+		\mu_{k + 1} &= \alpha \mu_k\\
+		k &= k + 1
+		\end{align*}
+		\item Si $||x_k - x_{k+ 1}|| > \varepsilon$ y $k \leq k_{max}$ repetir el proceso desde el punto 1. De lo contrario PARAR.
+	\end{enumerate}
+	Se puede acceder al código que contiene la implementación a través del siguiente \href{methods.py}{enlace}.
+	
+	Ambos métodos anteriores requieren solucionar un subproblema de optimización irrestricto. En ambos casos se decidió utilizar el método BFGS, una variante de los métodos Quasi-Newton.
+	
+	\subsubsection{Método BFGS (Broyden-Fletcher-Goldfarb-Shanno)}
+		El algoritmo de Newton tiene la ventaja de lograr la convergencia cuadrática si el punto inicial está cerca del óptimo; de lo contrario, la dirección puede no ser de descenso y diverger. Además, en cada iteración es necesario calcular la inversa de la matriz hessiana de $f$ en $x_k$ de manera exacta, lo cual es costoso computacionalmente. Por esta razón se proponen los métodos de QuasiNewton, que permiten construir iterativamente la matriz $S_k$ de manera que verifique las siguientes condiciones:
+		\begin{itemize}
+			\item Definida positiva: Si $S_k$ es definida positiva $\Rightarrow S_{k+1}$ también lo es
+			\item Aproximación de la matriz hessiana inversa de $f$: $x_k \rightarrow x^*, S_k \rightarrow [\nabla^2f(x^*)]^{-1}$ para $k \rightarrow \infty$
+		\end{itemize}
+	
+		La forma de construir estos métodos asegura:
+		\begin{itemize}
+			\item Convergencia global
+			\item Rapidez de convergencia mayor que lineal
+			\item Convergencia a un mínimo local
+		\end{itemize}
+		Puede encontrar una implementación del método en el siguiente \href{methods.py}{enalce}; no obstante, para la resolución de los ejercicios propuestos se utilizó la función \textit{minimize} de la biblioteca de Python \textit{Scipy.optimize}, pasando como argumento el solver \textit{'BFGS'}. Se profundizará un poco en esta herramienta más adelante.
+		
+	\subsection{Método de Secuenciación Cuadrática}
+	Los métodos de secuenciación cuadrática (\textit{SQP - Sequential Quadratic Programming}) son altamente utilizados en la vida real, al ser capaces de manejar cualquier nivel de no linealidad, incluidas las restricciones. Sin embargo, su principal desventaja es que el método incorpora numerosas derivaciones, que probablemente se necesiten trabajar de forma analítica, lo que resulta un problema al lidiar con muchas variables en problemas muy grandes.
+	
+	La idea de este método consiste en transformar el problema dado en los problemas cuadráticos $QP(x_k, \lambda_k, \mu_k)$ dados por:
+	\begin{align*}
+		min &f(x_k) + \nabla f(x)^Td + \frac{1}{2}d^T[\nabla^2L_k]d\\
+		s.a &h_i(x_k) + \nabla h_i(x_k)^Td = 0; i = 1, \ldots, n\\
+		&g_j(x_k) + \nabla g_j(x_k)^T d \leq 0; j 0 1, \ldots, m
+	\end{align*}
+	
+	donde
+	\begin{equation*}
+		\nabla^2 L_k = \nabla^2f(x_k) + \sum_{i = 1}^{n}(\lambda_k)_i\nabla^2h_i(x_k) + \sum_{j = 1}^{m}(\mu_k)_j\nabla^2g_j(x_k)
+	\end{equation*}
+	
+	
+	Dada la complejidad y el costo de este algoritmo es mejor utilizarlo en problemas de alto nivel de no linealidad en la función objetivo y sus restricciones; que no es el caso de los problemas propuestos. No obstante, se brinda una solución para los problemas con este método a través de la biblioteca \textit{Scipy} de Python; utilizando como \textit{solver} el método \textit{'SLSQP'} que puede encontrar en el siguiente \href{methods.py}{enlace}.
+	
+	\subsection{SciPy.optimize-minimize}
+	Scipy es un ecosistema basado en Python de código abierto destinado a software matemáticos, a la ciencia y la ingeniería. En particular, la biblioteca \textit{optimize} de SciPy provee métodos para la minimización (o maximización) de funciones objetivos, sujetas o no a restricciones. Incluye solucionadores para problemas no lineales (con soporte para algoritmos de optimización local y global), programación lineal, para hallar raíces, entre otros.
+	
+	El método utilizado para la solución de los problemas fue \textit{minimize}; que permite pasar como parámetros:
+	\begin{itemize}
+		\item la función objetivo a ser minimizada
+		\item $x_0$ el punto inicial
+		\item \textit{method}: tipo de solucionador. Presenta variados tipos de solucionadores, entre ellos: BFGS, que fue el utilizado en los métodos de penalidad y barrera para resolver el problema irrestricto, y SLSQP. Este últimmo minimiza la función dada utilizando el método \textit{Sequential Least Squares Quadratic Programming}, una de las variaciones de los métodos de secuenciación cuadrática.
+		\item la matriz jacobiana de la función objetivo
+		\item la matriz hessiana de la función objetivo
+		\item las restricciones
+		\item \textit{options} entre las cuales se puede setear, por ejemplo, la máxima cantidad de iteraciones que realizará el algoritmo.
+	\end{itemize}
+	Para más información con respecto a esta herramienta puede consultar la documentación a través del siguiente \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html}{enlace}
+	
+	
+	\section{Resolución de los problemas}
+	\subsection{Ejercicio 6. Función de Easom extendida por Xin-She Yang a n dimensiones}
+	\begin{equation*}
+		f(x) = -(-1)^n(\prod_{i = 1}^{n} \cos(x_i))exp[-\sum_{i = 1}^{n}(x_i - \pi)^2] ; \ \ -2\pi \leq x_i \leq 2\pi
+	\end{equation*}
+
+	\subsubsection{Método de penalidad}
+	Entrada:
+	\begin{itemize}
+		\item $x_0 = (3, 3)$
+		\item $c_0 = 1$
+		\item $\alpha = 1.5$
+		\item $\varepsilon = 0.001$
+		\item $k_{max} = 500$
+	\end{itemize}
+	Los resultados obtenidos fueron los siguientes:
+	\begin{itemize}
+		\item $x = (3.14159261, 3.14159261)$
+		\item $f(x) = -0.9999999999999947$
+		\item Tiempo de ejecución $\rightarrow 0.05225682258605957$
+		\item Iteraciones del método / Cantidad de llamados al método irrestricto $\rightarrow 2$
+		\item Cantidad total de iteraciones del método irrestricto: $\rightarrow 3$
+	\end{itemize}
+
+	Cambiando el valor inicial de entrada: $x_0 = (2, 2)$ se obtuvo:
+		\begin{itemize}
+		\item $x = (3.14159263, 3.14159263)$
+		\item $f(x) = -0.9999999999999988$
+		\item Tiempo de ejecución $\rightarrow 0.03750276565551758$
+		\item Iteraciones del método / Cantidad de llamados al método irrestricto $\rightarrow 2$
+		\item Cantidad total de iteraciones del método irrestricto: $\rightarrow 3$
+	\end{itemize}
+	Cambiando el valor inicial de entrada: $x_0 = (1000, 1000)$ se obtuvo:
+	\begin{itemize}
+		\item $x = (3.14159025, 3.14159025)$
+		\item $f(x) = -0.9999999999826514$
+		\item Tiempo de ejecución $\rightarrow 0.049865007400512695$
+		\item Iteraciones del método / Cantidad de llamados al método irrestricto $\rightarrow 2$
+		\item Cantidad total de iteraciones del método irrestricto: $\rightarrow 5$
+	\end{itemize}
+
+	\subsubsection{Método de barrera}
+	Entrada:
+	\begin{itemize}
+		\item $x_0 = (3, 3)$
+		\item $\mu_0 = 1$
+		\item $\alpha = 0.5$
+		\item $\varepsilon = 0.000001$
+		\item $k_{max} = 500$
+	\end{itemize}
+	Los resultados obtenidos fueron los siguientes:
+	\begin{itemize}
+		\item $x = (3.14158899, 3.14158899)$
+		\item $f(x) = -0.9999999999597108$
+		\item Tiempo de ejecución $\rightarrow 0.06136131286621094$
+		\item Iteraciones del método / Cantidad de llamados al método irrestricto $\rightarrow 15$
+		\item Cantidad total de iteraciones del método irrestricto: $\rightarrow 17$
+	\end{itemize}
+	
+	Cambiando el valor inicial de entrada: $x_0 = (2, 2)$ se obtuvo:
+	\begin{itemize}
+		\item $x = (3.14158899, 3.14158899)$
+		\item $f(x) = -0.9999999999596925$
+		\item Tiempo de ejecución $\rightarrow 0.07574319839477539$
+		\item Iteraciones del método / Cantidad de llamados al método irrestricto $\rightarrow 15$
+		\item Cantidad total de iteraciones del método irrestricto: $\rightarrow 17$
+	\end{itemize}
+	En este caso no tiene sentido  tomar $x_0 = (1000, 1000)$ ; puesto que el punto inicial debe pertencer al interior de $\Omega$.
+	
+	Con el valor inicial de entrada: $x_0 = (2, 2)$ y cambiando $\mu_0 = 0.5$ se obtuvo:
+	\begin{itemize}
+		\item $x = (3.14158899, 3.14158899)$
+		\item $f(x) = -0.9999999999597108$
+		\item Tiempo de ejecución $\rightarrow 0.04840803146362305$
+		\item Iteraciones del método / Cantidad de llamados al método irrestricto $\rightarrow 14$
+		\item Cantidad total de iteraciones del método irrestricto: $\rightarrow 15$
+	\end{itemize}
+	Con el valor inicial de entrada: $x_0 = (2, 2)$ y ahora cambiando $\alpha = 0.1$ se obtuvo:
+	\begin{itemize}
+		\item $x = (3.14158965, 3.14158965)$
+		\item $f(x) = -0.9999999999729691$
+		\item Tiempo de ejecución $\rightarrow 0.050284385681152344$
+		\item Iteraciones del método / Cantidad de llamados al método irrestricto $\rightarrow 6$
+		\item Cantidad total de iteraciones del método irrestricto: $\rightarrow 8$
+	\end{itemize}
+	Con el valor inicial de entrada: $x_0 = (2, 2)$ y ahora cambiando $\varepsilon = 0.001$ se obtuvo:
+	\begin{itemize}
+		\item $x = (3.14112374, 3.14112374)$
+		\item $f(x) = -0.9999993403504114$
+		\item Tiempo de ejecución $\rightarrow 0.05051994323730469$
+		\item Iteraciones del método / Cantidad de llamados al método irrestricto $\rightarrow 7$
+		\item Cantidad total de iteraciones del método irrestricto: $\rightarrow 10$
+	\end{itemize}
+	
+	\subsection{Ejercicio 17. Función de Schwefel}
+	\begin{equation*}
+		f(x) = -\sum_{i = 1}^{n}x_i \sin(\sqrt{|x_i|}); \ \ -500 \leq x_i \leq 500
+	\end{equation*}
+	\subsubsection{Método de Penalidad}
+	\begin{itemize}
+		\item $x_0 = (380, 380)$
+		\item $c_0 = 1$
+		\item $\alpha = 1.5$
+		\item $\varepsilon = 0.001$
+		\item $k_{max} = 500$
+	\end{itemize}
+	Los resultados obtenidos fueron los siguientes:
+	\begin{itemize}
+		\item $x = (420.96875136, 420.96875136)$
+		\item $f(x) = -837.965774544861$
+		\item Tiempo de ejecución $\rightarrow 0.02469921112060547$
+		\item Iteraciones del método / Cantidad de llamados al método irrestricto $\rightarrow 2$
+		\item Cantidad total de iteraciones del método irrestricto: $\rightarrow 5$
+	\end{itemize}
+	Cambiando el valor inicial de entrada: $x_0 = (770, 770)$ se obtuvo:
+	\begin{itemize}
+		\item $x = (420.9687581, 420.9687581)$
+		\item $f(x) = -837.9657745448327$
+		\item Tiempo de ejecución $\rightarrow  0.05682730674743652$
+		\item Iteraciones del método / Cantidad de llamados al método irrestricto $\rightarrow 9$
+		\item Cantidad total de iteraciones del método irrestricto: $\rightarrow 40$
+	\end{itemize}
+
+	\subsubsection{Método de Barrera}
+		Entrada:
+	\begin{itemize}
+		\item $x_0 = (380, 380)$
+		\item $\mu_0 = 1$
+		\item $\alpha = 0.5$
+		\item $\varepsilon = 0.000001$
+		\item $k_{max} = 500$
+	\end{itemize}
+	Los resultados obtenidos fueron los siguientes:
+	\begin{itemize}
+		\item $x = (420.96864103, 420.96864103)$
+		\item $f(x) = -837.9657745420673$
+		\item Tiempo de ejecución $\rightarrow 0.029854536056518555$
+		\item Iteraciones del método / Cantidad de llamados al método irrestricto $\rightarrow 4$
+		\item Cantidad total de iteraciones del método irrestricto: $\rightarrow 9$
+	\end{itemize}
+	
+	Cambiando el valor inicial de entrada: $x_0 = (430, 430)$ se obtuvo:
+	\begin{itemize}
+		\item $x = (420.9687181, 420.9687181)$
+		\item $f(x) = -837.9657745446659$
+		\item Tiempo de ejecución $\rightarrow 0.04573464393615723$
+		\item Iteraciones del método / Cantidad de llamados al método irrestricto $\rightarrow 6$
+		\item Cantidad total de iteraciones del método irrestricto: $\rightarrow 9$
+	\end{itemize}
+	Con el valor inicial de entrada: $x_0 = (430, 430)$ y cambiando $\mu_0 = 0.5$ se obtuvo:
+	\begin{itemize}
+		\item $x = (420.96867732, 420.96867732)$
+		\item $f(x) = -837.9657745436643$
+		\item Tiempo de ejecución $\rightarrow 0.03843045234680176$
+		\item Iteraciones del método / Cantidad de llamados al método irrestricto $\rightarrow 4$
+		\item Cantidad total de iteraciones del método irrestricto: $\rightarrow 6$
+	\end{itemize}
+	Con el valor inicial de entrada: $x_0 = (430, 430)$ y ahora cambiando $\alpha = 0.1$ se obtuvo:
+	\begin{itemize}
+		\item $x = (420.96872256, 420.96872256)$
+		\item $f(x) = -837.9657745447245$
+		\item Tiempo de ejecución $\rightarrow 0.0429232120513916$
+		\item Iteraciones del método / Cantidad de llamados al método irrestricto $\rightarrow 4$
+		\item Cantidad total de iteraciones del método irrestricto: $\rightarrow 7$
+	\end{itemize}
+	Con el valor inicial de entrada: $x_0 = (430, 430)$ y ahora cambiando $\varepsilon = 0.001$ se obtuvo:
+	\begin{itemize}
+		\item $x = (420.96838718, 420.96838718)$
+		\item $f(x) = -837.96577451231$
+		\item Tiempo de ejecución $\rightarrow 0.029078245162963867$
+		\item Iteraciones del método / Cantidad de llamados al método irrestricto $\rightarrow 2$
+		\item Cantidad total de iteraciones del método irrestricto: $\rightarrow 5$
+	\end{itemize}
+
+	\subsection{Ejercicio 18. Función Six-hump camel back}
+	\begin{equation*}
+		f(x, y) = (4 - 2.1x^2 + \frac{1}{3}x^4)x^2 + xy + 4(y^2 - 1)y^2 \ \ -3 \leq x \leq 3, \ \ -2 \leq y \leq 2
+	\end{equation*}
+	\subsubsection{Método de Penalidad}
+	\begin{itemize}
+		\item $x_0 = (-1, -1)$
+		\item $c_0 = 1$
+		\item $\alpha = 1.5$
+		\item $\varepsilon = 0.001$
+		\item $k_{max} = 500$
+	\end{itemize}
+	Los resultados obtenidos fueron los siguientes:
+	\begin{itemize}
+		\item $x = (-0.08984198,  0.71265633)$
+		\item $f(x) = -1.0316284534898341$
+		\item Tiempo de ejecución $\rightarrow 0.044888973236083984$
+		\item Iteraciones del método / Cantidad de llamados al método irrestricto $\rightarrow 2$
+		\item Cantidad total de iteraciones del método irrestricto: $\rightarrow 13$
+	\end{itemize}
+	Cambiando el valor inicial de entrada: $x_0 = (1, 5)$ se obtuvo:
+	\begin{itemize}
+		\item $x = (-0.08984289,  0.71265584)$
+		\item $f(x) = -1.0316284534838027$
+		\item Tiempo de ejecución $\rightarrow  0.030953407287597656$
+		\item Iteraciones del método / Cantidad de llamados al método irrestricto $\rightarrow 16$
+		\item Cantidad total de iteraciones del método irrestricto: $\rightarrow 8$
+	\end{itemize}
+	
+	\subsubsection{Método de Barrera}
+	Entrada:
+	\begin{itemize}
+		\item $x_0 = (1, 1)$
+		\item $\mu_0 = 1$
+		\item $\alpha = 0.5$
+		\item $\varepsilon = 0.000001$
+		\item $k_{max} = 500$
+	\end{itemize}
+	Los resultados obtenidos fueron los siguientes:
+	\begin{itemize}
+		\item $x = ( 0.08984197, -0.71265635)$
+		\item $f(x) = -1.031628453489848$
+		\item Tiempo de ejecución $\rightarrow  0.041620492935180664$
+		\item Iteraciones del método / Cantidad de llamados al método irrestricto $\rightarrow 2$
+		\item Cantidad total de iteraciones del método irrestricto: $\rightarrow 13$
+	\end{itemize}
+	
+	Cambiando el valor inicial de entrada: $x_0 = (-1, 1)$ se obtuvo:
+	\begin{itemize}
+		\item $x = (-0.08984207,  0.71265639)$
+		\item $f(x) = -1.0316284534898625$
+		\item Tiempo de ejecución $\rightarrow 0.027214527130126953$
+		\item Iteraciones del método / Cantidad de llamados al método irrestricto $\rightarrow 2$
+		\item Cantidad total de iteraciones del método irrestricto: $\rightarrow 7$
+	\end{itemize}
+	Con el valor inicial de entrada: $x_0 = (-1, 1)$ y cambiando $\mu_0 = 0.5$ se obtuvo:
+	\begin{itemize}
+		\item $x = (-0.08984206,  0.71265639)$
+		\item $f(x) = -1.0316284534898665$
+		\item Tiempo de ejecución $\rightarrow 0.04078388214111328$
+		\item Iteraciones del método / Cantidad de llamados al método irrestricto $\rightarrow 2$
+		\item Cantidad total de iteraciones del método irrestricto: $\rightarrow 7$
+	\end{itemize}
+	Con el valor inicial de entrada: $x_0 = (-1, 1)$ y ahora cambiando $\alpha = 0.1$ se obtuvo:
+	\begin{itemize}
+		\item $x = (-0.08984207,  0.71265639)$
+		\item $f(x) = -1.0316284534898625$
+		\item Tiempo de ejecución $\rightarrow 0.06699514389038086$
+		\item Iteraciones del método / Cantidad de llamados al método irrestricto $\rightarrow 2$
+		\item Cantidad total de iteraciones del método irrestricto: $\rightarrow 7$
+	\end{itemize}
+	Con el valor inicial de entrada: $x_0 = (-1, 1)$ y ahora cambiando $\varepsilon = 0.001$ se obtuvo:
+	\begin{itemize}
+		\item $x = (-0.08984207,  0.71265639)$
+		\item $f(x) = -1.0316284534898625$
+		\item Tiempo de ejecución $\rightarrow 0.05195021629333496$
+		\item Iteraciones del método / Cantidad de llamados al método irrestricto $\rightarrow 2$
+		\item Cantidad total de iteraciones del método irrestricto: $\rightarrow 7$
+	\end{itemize}
+	
+	\subsection{Observaciones sobre los resultados obtenidos}
+	Primeramente, las soluciones obtenidas en los tres problemas son aproximadas a las soluciones que se esperan en los mismos; la diferencia entre los valores de $x$ para los cuales f es mínima resulta despreciable de acuerdo a los de la solución esperada.
+	
+	En el método de penalidad, se hizo variar en cada caso el valor inicial de $x_0$ entre los parámetros de entrada del algoritmo. Para la primera evaluación se tomaron puntos pertenecientes al conjunto de soluciones factibles y en la siguiente evaluación, puntos que no pertenecieran a $\Omega$. Aunque en todos los casos los resultados estuvieron acordes a la solución esperada, se puede notar un aumento de la cantidad de iteraciones en los que se utilizó un punto no factible. Se seleccionaron estos puntos para demostrar que el punto inicial seleccionado para el método de penalidad no necesita ser factible para lograr la convergencia a la solución.
+	
+	En cuanto al método de barrera, el punto inicial debe pertenecer al interior de $\Omega$ por tanto, en todo momento el punto inicial pasado como parámetro es un punto factible. Además, note que mientras más cercano es dicho punto al punto que soluciona el problema; más se acerca el valor obtenido al que se espera en el problema. Esto se observa principalmente en el segundo problema.
+	
+	Igualmente, otra caracterísitica que puede ser observada es el aumento de $\varepsilon$: al ser mayor, lógicamente implica la disminución del número de iteraciones del método, puesto que se puede alcanzar una de las condiciones de parada más rápidamente; sin embargo, se pierde exactitud en la respuesta que se obtiene.
+\end{document}

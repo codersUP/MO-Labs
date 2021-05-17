@@ -3,6 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from scipy import optimize
 from methods import *
+from pprint import pprint
 
 
 def FirstDerivateSchwefelsFunction(x):
@@ -97,7 +98,7 @@ def omega(x):
 
 
 def plot():
-    x = np.arange(-500, 500, 0.1);
+    x = np.arange(-500, 500, 0.1)
     y = [F([i]) for i in x]
 
     plt.plot(x, y)
@@ -107,7 +108,16 @@ def plot():
 
 #testing-------------------
 if __name__ == '__main__':
-    plot()
+    # plot()
 
-    print(Penalization_method("BFGS", Q, omega, x0=np.array([380,380]), c0=1, alpha=1.5, epsilon=0.001, k_max=500))
-    print(Barrier_method("BFGS", R, x0=np.array([380,380]), miu_0=1, alpha=0.5, epsilon=0.001, k_max=500))
+    # ans = Penalization_method("BFGS", Q, omega, x0=np.array([770,770]), c0=1, alpha=1.5, epsilon=0.001, k_max=500)
+    ans = Barrier_method("BFGS", R, x0=np.array([430,430]), miu_0=1, alpha=0.5, epsilon=0.001, k_max=500)
+    # print("Penalization Method")
+    # pprint(ans)
+    # print()
+    # print("Barrier Method")
+    print(F(ans["1.Result"]))
+    pprint(ans)
+    # print()
+    # print("SQP Method")
+    # print(SQP_method(F, x0=np.array([380,380]), bounds=[(-500, 500), (-500, 500)], k_max=500))

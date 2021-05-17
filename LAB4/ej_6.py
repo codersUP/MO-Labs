@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from scipy import optimize
 from methods import *
-
+from pprint import pprint
 
 
 
@@ -14,11 +14,12 @@ def F(x):
     
     piatoria = 1
     exp_power = 0
-    for el in x:
-        piatoria *= math.cos(el)
-        exp_power -= (el-math.pi)**2
     
-    return -1 * (-1)**n * piatoria * math.exp(exp_power)   
+    for el in x:
+        piatoria*= (math.cos(el))
+        exp_power-= (el-math.pi)**2
+    
+    return -1  *  ((-1)**n) * (piatoria) * math.exp(exp_power)   
 
 #--------For x_i <= 500 restrictions-------------
 def g_i_1(x_i : float):
@@ -77,11 +78,12 @@ def omega(x):
             return False
     return True
 
-
+def Bounds(n):
+    return [(-2 * math.pi, 2 * math.pi) for _ in range(n)]
 
 
 def plot():
-    x = np.arange(-2 * math.pi, 2 * math.pi, 0.1);
+    x = np.arange(-2 * math.pi, 2 * math.pi, 0.1)
     y = [F([i]) for i in x]
 
     plt.plot(x, y)
@@ -91,7 +93,17 @@ def plot():
 
 #testing-------------------
 if __name__ == '__main__':
-    plot()
-
-    print(Penalization_method("BFGS", Q, omega, x0=np.array([4, 4, 4, 4]), c0=1, alpha=1.5, epsilon=0.001, k_max=500))
-    print(Barrier_method("BFGS", R, x0=np.array([4, 4, 4, 4]), miu_0=1, alpha=0.5, epsilon=0.0001, k_max=500))
+    # plot()
+    
+    # print("Penalization Method")
+    # answer = Penalization_method("BFGS", Q, omega, x0=np.array([2, 2]), c0=1, alpha=1.5, epsilon=0.001, k_max=500)
+    # pprint(answer)
+    # print(F(answer["1.Result"]))
+    # print()
+    print("Barrier Method")
+    answer = Barrier_method("BFGS", R, x0=np.array([2,2]), miu_0=1, alpha=0.5, epsilon=0.001, k_max=500)
+    pprint(answer)
+    print(F(answer["1.Result"]))
+    # print()
+    # print("SQP Method")
+    # print(SQP_method(F, np.array([3,3]), Bounds(2), k_max=500))
