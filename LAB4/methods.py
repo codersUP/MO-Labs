@@ -159,7 +159,7 @@ def Penalization_method(Irrestricted_method, Q_method, omega,x0,c0, alpha,epsilo
               "3.Iteraciones/ Cantidad de llamados a metodo irrestricto" : it,
               "4.Cantidad total de iteraciones de metodo irrestricto" : total_irrestricted_iterations,
               "5.Promedio de iteraciones de metodo irrestricto" : total_irrestricted_iterations/it,
-              "6.Promedio de tiempo de metodo irrestricto" : total_irrestricted_time/it 
+              "6.Promedio de tiempo de metodo irrestricto" : total_irrestricted_time/it
               }
     return answer
 

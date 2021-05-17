@@ -93,13 +93,17 @@ def plot():
 
 #testing-------------------
 if __name__ == '__main__':
-    plot()
+    # plot()
     
-    print("Penalization Method")
-    pprint(Penalization_method("BFGS", Q, omega, x0=np.array([3,3]), c0=1, alpha=1.5, epsilon=0.001, k_max=500))
-    print()
+    # print("Penalization Method")
+    # answer = Penalization_method("BFGS", Q, omega, x0=np.array([2, 2]), c0=1, alpha=1.5, epsilon=0.001, k_max=500)
+    # pprint(answer)
+    # print(F(answer["1.Result"]))
+    # print()
     print("Barrier Method")
-    pprint(Barrier_method("BFGS", R, x0=np.array([3,3]), miu_0=1, alpha=0.5, epsilon=0.000001, k_max=500))
-    print()
-    print("SQP Method")
-    print(SQP_method(F, np.array([3,3]), Bounds(2), k_max=500))
+    answer = Barrier_method("BFGS", R, x0=np.array([2,2]), miu_0=1, alpha=0.5, epsilon=0.001, k_max=500)
+    pprint(answer)
+    print(F(answer["1.Result"]))
+    # print()
+    # print("SQP Method")
+    # print(SQP_method(F, np.array([3,3]), Bounds(2), k_max=500))
