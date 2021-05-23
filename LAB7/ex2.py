@@ -27,3 +27,9 @@ def solve():
 
 
 solve()
+
+# OptimizationStatus.INFEASIBLE
+# Solution to the objective function: None
+# x1: None
+# x2: None
+# Execution time: 0.011461734771728516

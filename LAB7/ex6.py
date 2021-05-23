@@ -27,3 +27,9 @@ def solve():
 
 
 solve()
+
+# OptimizationStatus.OPTIMAL
+# Solution to the objective function: 14.0
+# x1: 2.0
+# x2: 6.0
+# Execution time: 0.015373945236206055

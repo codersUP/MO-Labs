@@ -30,3 +30,10 @@ def solve():
 
 
 solve()
+
+# OptimizationStatus.OPTIMAL
+# Solution to the objective function: -7.0
+# x1: 0.0
+# x2: 3.0
+# x3: 4.0
+# Execution time: 0.02011251449584961
