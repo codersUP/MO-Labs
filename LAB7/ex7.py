@@ -12,7 +12,6 @@ def solve():
     # Constraints
     m += 2 * x1 - 3 * x2  + 3 * x3 <= 4
     m += 4 * x1 + x2  + x3 <= 8
-    m +=  3 * x1 + 3 * x2 + x3 == 13
 
     # Objective function
     m.objective = -2 * x1 - x2 - x3
@@ -32,8 +31,8 @@ def solve():
 solve()
 
 # OptimizationStatus.OPTIMAL
-# Solution to the objective function: -7.0
+# Solution to the objective function: -8.0
 # x1: 0.0
-# x2: 3.0
-# x3: 4.0
-# Execution time: 0.02011251449584961
+# x2: 8.0
+# x3: 0.0
+# Execution time: 0.5075554847717285
