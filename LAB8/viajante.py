@@ -12,7 +12,7 @@ def generate_travels(n):
     return ret
             
 
-def ant_colony_optimization_tsp(matrix,rho=.03,q=1,alpha=1,beta=3):
+def viajante_ants(matrix,rho=.03,q=1,alpha=1,beta=3):
     G = nx.Graph(matrix)
     solver = acopy.Solver(rho=rho, q=q)
     colony = acopy.Colony(alpha=alpha, beta=beta)
@@ -38,7 +38,7 @@ prices = [[0, 22, 11, 4],
           [11, 8, 0, 4],
           [4, 5, 4, 0]]
 costs = np.array(prices)
-path, solver, colony = ant_colony_optimization_tsp(costs)
+path, solver, colony = viajante_ants(costs)
 
 print(solver)
 Plotter(solver.plugins['StatsRecorder'].stats).plot()
