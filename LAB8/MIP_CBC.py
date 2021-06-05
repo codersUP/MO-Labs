@@ -46,6 +46,8 @@ def solve_CBC(n , d_i_j):
                 if delta_i_j_k[i][j][k].x:
                     print(f"{i} -> {j}")
 
+    return (m.objective_value, end-start)
+
 
 def generate_distance_matrix(n: int):
     dists = [[0]*n for _ in range(n)] 

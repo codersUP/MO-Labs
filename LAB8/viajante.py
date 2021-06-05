@@ -38,7 +38,7 @@ prices = [[0, 22, 11, 4],
           [11, 8, 0, 4],
           [4, 5, 4, 0]]
 costs = np.array(prices)
-path, solver, colony = viajante_ants(costs)
+# path, solver, colony = viajante_ants(costs)
 
-print(solver)
-Plotter(solver.plugins['StatsRecorder'].stats).plot()
+# print(solver)
+# Plotter(solver.plugins['StatsRecorder'].stats).plot()
