@@ -33,7 +33,8 @@
     \normalfont\normalsize
     {\huge Modelos de Optimización\\
     		\textbf{Laboratorio 8:}  Búsqueda Bibliográfica de Metaheurísticas eficientes para 
-    		la solución de problemas de optimización en enteros}
+    		la solución de problemas de optimización en enteros
+}
     \vspace{12pt}
 }
 
@@ -184,7 +185,7 @@ def TabuSearch(x0, n):
 	    	\begin{description}
 	    		\item[Operador de cruzamiento (Cross)] Dados dos cromosomas \textit{padres} se obtiene uno nuevo con características de sus padres o igual a uno de ellos.
 	    		\item[Operador de mutación (Mutate)] Dado un cromosoma, se realiza un cambio en él para generar uno nuevo.
-	    		\item[Operador de selección]: Decide si un individuo o no pasa a la siguiente generación.
+	    		\item[Operador de selección (Select)]: Decide si un individuo pasa o no a la siguiente generación.
 	    	\end{description}
 	    	
 	    	\subsubsection{Pseudocódigo}
@@ -225,7 +226,7 @@ def GeneticAlgorithm(n):
 	    	
 	    		Se pueden establecer como criterios de parada los siguientes:
 	    		\begin{itemize}
-	    			\item Establecer un número máximo de genraciones
+	    			\item Establecer un número máximo de generaciones
 	    			\item Obtener un cromosoma cuyo costo es inferior a cierto valor de umbral prefijado
 	    			\item No obtener una disminución significativa de la función de costo durante cierto número de generaciones.
 	    		\end{itemize}
@@ -238,13 +239,13 @@ def GeneticAlgorithm(n):
 	    
 	    
 	    \subsection{Inteligencia de enjambres. Algoritmo de la colonia de hormigas}
-	    	La inteligencia de enjambres es una rama de la inteligencia artificial que estudia el comportamiento colectivo de los sistemas descentralizados, autoorganizados, naturales o artificiales. Están inspirados por ciertos sistemas biológicos de la naturaleza conformados por una población de agentes simples que interactúan entre ellos y con el medio ambiente. TRal es el caso de: las colonias de hormigas, el alineamiento de las aves en vuelo, el comportamiento de rebaños durante el pastoreo y el crecimiento bacteriano.
+	    	La inteligencia de enjambres es una rama de la inteligencia artificial que estudia el comportamiento colectivo de los sistemas descentralizados, autoorganizados, naturales o artificiales. Están inspirados por ciertos sistemas biológicos de la naturaleza conformados por una población de agentes simples que interactúan entre ellos y con el medio ambiente. Tal es el caso de: las colonias de hormigas, el alineamiento de las aves en vuelo, el comportamiento de rebaños durante el pastoreo y el crecimiento bacteriano.
 	    	
 	    	El algoritmo de la colonia de hormigas (ACO - \textit{Ant Colony Optimization}) es una técnica probabilística para solucionar problemas computacionales que pueden reducirse a buscar los mejores caminos o rutas en grafos.
 	    	
 			La idea del mismo proviene de la observación de la explotación de los recursos alimentarios entre hormigas, las cuales son capaces, en conjunto de buscar el menor camino existente entre la fuente de comida y su colonia.
 			
-			La primera hormiga encuentra la funete de alimentos ($F$) a través de cualquier camino ($a$), y retorna a la colonia ($N$) dejando un rastro de feromonas tras de sí. Las hormigas más cercanas se verán atraídas por ellas y seguirán su pista de forma más o menos directa. De este modo, al regresar a la colonia habrán fortalecido de feromonas la ruta más corta, haciéndola más atractiva, y dado que las feromonas son volátiles, aquellas que estaban en la ruta más larga irán desapareciendo. Finalmente todas habrán escogido el camino más corto.
+			La primera hormiga encuentra la fuente de alimentos ($F$) a través de cualquier camino ($a$), y retorna a la colonia ($N$) dejando un rastro de feromonas tras de sí. Las hormigas más cercanas se verán atraídas por ellas y seguirán su pista de forma más o menos directa. De este modo, al regresar a la colonia habrán fortalecido de feromonas la ruta más corta, haciéndola más atractiva, y dado que las feromonas son volátiles, aquellas que estaban en la ruta más larga irán desapareciendo. Finalmente todas habrán escogido el camino más corto.
 			
 			\subsubsection{Pseudocódigo}
 				\begin{figure}[H]
@@ -317,21 +318,21 @@ def ant_colony_optimization_tsp(matrix,rho=.03,q=1,alpha=1,beta=3):
 	
 	return (path, solver, colony)
 	 				\end{minted}
-	 				\caption{Puede acceder al código completo a través de este \href{acotsp.py}{enlace}}.
+	 				\caption{Puede acceder al código completo a través de este \href{viajante.py}{enlace}}.
  				\end{figure}
  			
  				Note que se genera una colonia de hormigas con los parámetros:
- 				\begin{itemize}
+ 				\begin{description}
  					\item[alpha(float)] Factor relativo para la feromona en las aristas; representa cuánto importa la feromona para la hormiga.
  					\item[beta(float)] Factor relativo para el costo de las aristas; representa cuánto importa la distancia.
- 				\end{itemize}
+ 				\end{description}
  				Las hormigas exploran el grafo utilizando $alpha$ y $beta$ en el proceso de decisión para determinar cuál será la siguiente arista a la que se moverán.
  				
  				De igual forma, se setea el solucionador con los parámetros:
- 				\begin{itemize}
+ 				\begin{description}
  					\item[q(float)] Cantidad de feromona a depositar en las aristas.
  					\item[rho(float)] El porciento de feromona a evaporar.
- 				\end{itemize}
+ 				\end{description}
  		
  		\subsection{Resultados obtenidos}
  		Tomando una cantidad $n = 10$ de ciudades, se obtuvieron los siguientes resultados:
@@ -360,11 +361,32 @@ Duration:
 
 			\end{minted}
 		\end{figure}
-		Vea que la última fila de la tabla anterior muestra el valor que alcanza la función en la columna \textbf{Cost} y el vector solución (la permutación para la que se obtiene dicho costo) en la columnz \textbf{Solution}
+		Vea que la última fila de la tabla anterior muestra el valor que alcanza la función en la columna \textbf{Cost} y el vector solución (la permutación para la que se obtiene dicho costo) en la columna \textbf{Solution}
  		
  		\subsection{Comparación de la metaheurística utilizada con las metodologías de planos cortantes y ramificación y acotación}
- 		
- 			\subsubsection{Aumento de la dimensión del problema}
+ 			La mayoría de los problemas combinatorios de optimización resultan difíciles de resolver. Los algoritmos exactos, como las metodologías de planos cortantes y ramificación y acotación, garantizan que se hallará una solución óptima al problema; sin embargo, el tiempo de ejecución de estos algoritmos crece de forma dramática cuando aumenta el tamaño de la instancia del problema.
+ 			
+ 			Desde un punto de vista teórico, es posible resolver cualquier problema lineal en enteros usando un acercamiento con los métodos de planos cortantes. No obstante, puede demorar un largo tiempo la convergencia al óptimo; en parte, porque el subproblema de separar cortes efectivos ya resulta complicado. Es por ello, que en numerosas ocasiones se recurre a la combinación de este con otros métodos, como es el caso del de ramificación y acotación: Se generan cortes en los nodos del árbol de ramificación y acotación, para estrechar los límites de las relajaciones LP o para excluir soluciones no factibles. De hecho, en los ejemplos que se mostrarán a continuación, el solucionador utilizado es CBC (\textit{COIN-OR Branch-and-Cut}) de la biblioteca MIP de Python, que es la combinación de dichos algoritmos.
+ 			
+ 			Cuando se está en presencia de los casos en que los algoritmos exactos no son los más efectivos, es que se recurre a las diferentes heurísticas, que intercambian la optimalidad de la solución por un mejor tiempo de ejecución; es decir, están diseñadas para obtener soluciones buenas pero no necesariamente óptimas en un tiempo aceptable. 
+ 			
+ 			En particular, en el caso del algoritmo de la colonia de hormigas, la retroalimentación positiva conduce a un rápido descubrimiento de buenas soluciones. A diferencia de otras metaheurísitcas, como los algoritmos genéticos, la computación distribuida evita la convergencia prematura. Aunque es cierto que se garantiza la convergencia del método, el tiempo que demora en converger es incierto; por lo que se recurre a criterios de parada que pueden provocar que la solución obtenida no sea la óptima, tal como se mencionaba anteriormente.
+ 			
+ 			Utilizando las dos variantes de solución propuestas, se computó la solución del problema del viajante con varios valores de $n$(en orden ascendente); lo que permitió evaluar el tiempo de ejecución de los algoritmos y la optimalidad de las soluciones obtenidas. Los resultados fueron los siguientes:
+ 			
+ 			\begin{figure}[H]
+				\includegraphics[]{pictures/ExecutionTime.png}
+				\caption{Comparación del tiempo de ejecución.}
+ 			\end{figure}
+ 			\begin{figure}[H]
+ 				\includegraphics[]{pictures/Optimality.png}
+ 				\caption{Comparación de la optimalidad.}
+ 			\end{figure}
+ 			
+			Puede acceder al código que genera estas gráficas a través del siguiente \href{main.py}{enlace}
+			
+			Como era de esperar, se puede observar que a medida que aumenta la cantidad de ciudades ($n$), los valores que retorna el algoritmo de la colonia de hormigas no son los óptimos, pero tampoco se encuentran muy alejados de la solución que devuelve el otro; además, el tiempo que demora el cómputo es mucho mejor que el del CBC.
+
  		
 
 \end{document}
